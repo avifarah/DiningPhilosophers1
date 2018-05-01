@@ -31,7 +31,7 @@ namespace DiningPhilosophers1
 				// milliseconds.  Original problem have philosophers dine 
 				// forever, but we are not patient enough to wait until 
 				// forever...
-				Task.Delay(ConfigValue.Inst.DurationPhilosophersEat).Wait();
+				Thread.Sleep(ConfigValue.Inst.DurationPhilosophersEat);
 
 				try
 				{

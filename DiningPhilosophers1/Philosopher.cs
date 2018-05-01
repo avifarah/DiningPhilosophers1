@@ -91,7 +91,8 @@ namespace DiningPhilosophers1
 					// Ask for eating permission.
 					// Note: Once eating permission is granted, the philosopher still needs to 
 					// check if the left and right forks are available
-					AquireEatPermissionSlip.WaitAsync().Wait();
+					AquireEatPermissionSlip.Wait();
+
 					Console.WriteLine($"{DateTime.Now:HH:mm:ss.ffff} Philosopher Ph{Name} will attempt to eat.  Attempt: {i}.");
 
 					bool isOkToEat;
@@ -100,7 +101,7 @@ namespace DiningPhilosophers1
 						// Check for Fork availability
 						isOkToEat = IsForksAvailable();
 						if (isOkToEat)
-							AquireForks();						// May throw an exception
+							AquireForks();                      // May throw an exception
 					}
 
 					if (isOkToEat)
@@ -114,7 +115,7 @@ namespace DiningPhilosophers1
 				catch (Exception ex)
 				{
 					Console.WriteLine($"{DateTime.Now:HH:mm:ss.ffff} ERORR...    Ph{Name} ENCOUNTER AN ERROR: {ex.Message} " +
-					                  $"AND NOW IS NOT PARTICIPATING IN THE DINING EXPERIENCE {new string('.', 20)}");
+									  $"AND NOW IS NOT PARTICIPATING IN THE DINING EXPERIENCE {new string('.', 20)}");
 					throw;
 				}
 				finally
@@ -124,7 +125,7 @@ namespace DiningPhilosophers1
 
 				// Wait for a duration of durationBeforeRequstEatPermission
 				// before asking for eat permission.
-				Task.Delay(durationBeforeRequstEatPermission).Wait();
+				Thread.Sleep(durationBeforeRequstEatPermission);
 			}
 		}
 

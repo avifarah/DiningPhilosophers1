@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using StringHandling;
+using StringHandling.ProcessEvaluate;
+using System.Linq;
 
 namespace DiningPhilosophers1
 {
@@ -13,7 +17,18 @@ namespace DiningPhilosophers1
 		private static readonly Lazy<ConfigValue> LazyInst = new Lazy<ConfigValue>(() => new ConfigValue());
 		public static readonly ConfigValue Inst = LazyInst.Value;
 
-		private ConfigValue() { }
+		private EnhancedStringEval _eval = null;
+		private IList<IProcessEvaluate> _context;
+		private IDictionary<string, string> _configValues;
+
+		private ConfigValue()
+		{
+			var pIntDivide = new ProcessIntegerDivide();
+			_configValues = ConfigurationManager.AppSettings.AllKeys.ToDictionary(id => id, id => ConfigurationManager.AppSettings[id]);
+			var pConfig = new ProcessConfigKey(_configValues);
+			_context = new List<IProcessEvaluate> { pIntDivide, pConfig };
+			_eval = new EnhancedStringEval(_context);
+		}
 
 		public int PhilosopherCount
 		{
@@ -59,27 +74,25 @@ namespace DiningPhilosophers1
 			}
 		}
 
-		public int MaxThinkDuration
+		public int MaxEatDuration
 		{
 			get
 			{
-				const string key = "philosopher Max Think Duration [milliseconds]";
-				const int maxThinkDurationDefault = 1000;
-				var maxThinkDuration = ExtractInteger(key, maxThinkDurationDefault);
-				return maxThinkDuration;
+				const string key = "philosopher Max Eat Duration [milliseconds]";
+				const int maxEatDurationDefault = 1000;
+				var maxEatDuration = ExtractInteger(key, maxEatDurationDefault);
+				return maxEatDuration;
 			}
 		}
 
-		//<!-- Minimum think duration -->
-		//<add key = "philosopher Min Think Duration [milliseconds]" value="50"/>
-		public int MinThinkDuration
+		public int MinEatDuration
 		{
 			get
 			{
-				const string key = "philosopher Min Think Duration [milliseconds]";
-				const int minThinkDurationDefault = 50;
-				var minThinkDuration = ExtractInteger(key, minThinkDurationDefault);
-				return minThinkDuration;
+				const string key = "philosopher Min Eat Duration [milliseconds]";
+				const int minEatDurationDefault = 50;
+				var minEatDuration = ExtractInteger(key, minEatDurationDefault);
+				return minEatDuration;
 			}
 		}
 
@@ -117,16 +130,9 @@ namespace DiningPhilosophers1
 
 		private string GetConfigValue(string key)
 		{
-			var val = ConfigurationManager.AppSettings[key];
-			if (string.IsNullOrEmpty(val)) return string.Empty;
-
-			for (; ; )
-			{
-				var m = _reValue.Match(val);
-				if (!m.Success) return val;
-
-				val = _reValue.Replace(val, ReplaceKey);
-			}
+			var val = _configValues[key];
+			var eVal = _eval.EvaluateString(val);
+			return eVal;
 		}
 
 		private string ReplaceKey(Match m)

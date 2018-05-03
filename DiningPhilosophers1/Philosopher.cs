@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace DiningPhilosophers1
 {
@@ -63,8 +62,8 @@ namespace DiningPhilosophers1
 		private readonly Random _rnd;
 
 		/// <summary>Retrieve some values once</summary>
-		private readonly int _maxThinkDuration = ConfigValue.Inst.MaxThinkDuration;
-		private readonly int _minThinkDuration = ConfigValue.Inst.MinThinkDuration;
+		private readonly int _maxEatDuration = ConfigValue.Inst.MaxEatDuration;
+		private readonly int _minEatDuration = ConfigValue.Inst.MinEatDuration;
 
 		/// <summary>
 		/// The routine each Task employs for the eating philosophers
@@ -126,6 +125,7 @@ namespace DiningPhilosophers1
 				// Wait for a duration of durationBeforeRequstEatPermission
 				// before asking for eat permission.
 				Thread.Sleep(durationBeforeRequstEatPermission);
+				//await Task.Delay(durationBeforeRequstEatPermission);
 			}
 		}
 
@@ -160,7 +160,7 @@ namespace DiningPhilosophers1
 		private void PhilosopherEat()
 		{
 			// Eating duration is randomized
-			var eatingDuration = _rnd.Next(_maxThinkDuration) + _minThinkDuration;
+			var eatingDuration = _rnd.Next(_maxEatDuration) + _minEatDuration;
 
 			// Display who is eating
 			var eatingPhilosophers = EatingPhilosphers().Select(p => p.Name).ToList();

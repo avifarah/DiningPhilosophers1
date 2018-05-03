@@ -59,5 +59,11 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StringHandling\StringHandling.csproj">
+      <Project>{da5bc41b-28ce-4938-ad3e-7218dc4c61c3}</Project>
+      <Name>StringHandling</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

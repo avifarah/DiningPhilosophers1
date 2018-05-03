@@ -107,27 +107,6 @@ namespace DiningPhilosophers1
 			}
 		}
 
-		//
-		// Internal
-		//
-		// The regular expression pattern: @"\{\%(?<val>.*?)\%\}" searches for the characters:
-		// "{" followed by "%" followed by any number of characters collectively named "val" 
-		// followed by "%" and followed by "}"
-		//
-		// This will allow us to have in our configuration file:
-		// 		<add key="Philosopher Count" value="5" />
-		//		<add key="Fork Count" value="{%Philosopher Count%}" />
-		//
-		// and the "Fork Count" key will evaluate to the same value as "Philosopher Count".
-		//
-		// Note that the regular expression pattern: @"\{\%(?<val>.*?)\%\}", is not perfect.  
-		// For example it will not handle nested "{%..%}" patterns  correctly (like, @"{%{%abc%}%}").
-		// For as long as each key contains a non-nested "{%..%}" then we will be OK.
-		// The keys may contain more than one "{%..%}" construct and the below 
-		// GetConfigValue(..) will evaluate it correctly.
-		//
-		private readonly Regex _reValue = new Regex(@"\{\%(?<val>.*?)\%\}", RegexOptions.Singleline);
-
 		private string GetConfigValue(string key)
 		{
 			var val = _configValues[key];
